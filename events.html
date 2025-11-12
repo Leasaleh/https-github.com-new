@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Events Catalog – Project 4</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <header>
+    <h1>Web Events Catalog</h1>
+    <nav>
+      <a href="welcome.html">Welcome</a>
+      <a href="cv.html">CV</a>
+      <a href="schedule.html">Schedule</a>
+      <a href="cv-entry.html">Make Your Own CV</a>
+      <a href="events.html">Events</a>
+      </nav>
+    </header>
+
+  <main class="card">
+    <section>
+      <h2>Explore Browser Events</h2>
+      <p>Search or filter browser events by category, description, supported tags, and W3Schools reference links.</p>
+
+      <div class="filters">
+        <label for="searchBox">Search Events:</label>
+        <input type="text" id="searchBox" placeholder="Type an event name..." />
+
+        <label for="categoryFilter">Category:</label>
+        <select id="categoryFilter">
+          <option value="all">All Categories</option>
+          <option value="Window">Window</option>
+          <option value="Mouse">Mouse</option>
+          <option value="Keyboard">Keyboard</option>
+          <option value="Form">Form</option>
+          <option value="Clipboard">Clipboard</option>
+          <option value="Drag & Drop">Drag & Drop</option>
+          <option value="Touch">Touch</option>
+          <option value="Pointer">Pointer</option>
+          <option value="Media">Media</option>
+          <option value="Animation/Transition">Animation/Transition</option>
+          <option value="DOM">DOM</option>
+          <option value="Focus">Focus</option>
+        </select>
+      </div>
+    </section>
+
+    <section id="eventsContainer">
+      <table>
+        <thead>
+          <tr>
+            <th>Event Name</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Supported HTML Tags</th>
+            <th>W3Schools Link</th>
+          </tr>
+        </thead>
+        <tbody id="eventsTableBody">
+          <!-- JS will insert rows here -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    <p>Last updated: 2025-11-12</p>
+    <p>Disclaimer: This site is for educational purposes only.</p>
+    <p>AI-use disclosure: Content created with assistance from ChatGPT.</p>
+  </footer>
+
+  <script src="events.js"></script>
+</body>
+</html>
