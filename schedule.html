@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Schedule</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background: #f5f5f5;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .schedule-table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    table-layout: fixed;
+  }
+  .schedule-table th, .schedule-table td {
+    border: 1px solid #ccc;
+    text-align: center;
+    vertical-align: middle;
+    padding: 5px;
+    height: 40px;
+    cursor: pointer;
+    box-sizing: border-box;
+  }
+  .time-col {
+    width: 80px;
+    background: #eee;
+    font-size: 0.9em;
+    cursor: default;
+  }
+  /* Course colors */
+  .course-network { background-color: #87CEEB; color: #000; }
+  .course-moral { background-color: #FFD700; color: #000; }
+  .course-electronics { background-color: #EE82EE; color: #000; }
+  .course-web { background-color: #32CD32; color: #fff; }
+  .course-algo { background-color: #9370DB; color: #fff; }
+  .course-lab { background-color: #FF6347; color: #fff; }
+
+  /* Modal */
+  .modal-content {
+  background: #fff;
+  margin: 5% auto;          /* smaller top margin on bigger screens */
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;               /* responsive width */
+  max-width: 600px;         /* limit max width */
+  position: relative;
+  overflow-wrap: break-word; /* ensures long words/text wrap */
+  box-sizing: border-box;
+}
+
+/* Make sure the modal content scrolls if content is too tall */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  overflow-y: auto;          /* allows scrolling if content overflows */
+  padding: 20px;
+}
+
+  .close {
+    position: absolute;
+    top: 10px; right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .close:hover { color: #000; }
+
+  /* Modal content spacing */
+  .modal-content p { margin: 5px 0; }
+
+  :root {
+    --primary: #0077b6;   /* light blue header */
+    --secondary: #00a8e8; /* hover accent */
+    --light: #ffffff;     /* card background */
+    --dark: #1a1a1a;      /* text color */
+    --shadow: 0 8px 24px rgba(0,0,0,0.15);
+    --radius: 12px;
+    --font-main: 'Poppins', sans-serif;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-main);
+    background: #f0f4f8;
+    color: var(--dark);
+    min-height: 100vh;
+}
+
+/* Header */
+header {
+    background: var(--primary);
+    padding: 1rem 2rem;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+}
+
+/* Navigation */
+header nav {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Links */
+header nav a {
+    color: var(--light);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.5rem 0.8rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect */
+header nav a:hover {
+    background: var(--secondary);
+    color: var(--light);
+    transform: translateY(-2px);
+}
+
+/* Active page */
+header nav a.active {
+    background: var(--secondary);
+}
+
+/* Main content area */
+main {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    display: grid;
+    gap: 2rem;
+}
+
+/* White cards */
+.card {
+    background: var(--light);
+    padding: 2rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.2);
+}
+
+.card h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--primary);
+}
+
+#downloadSyllabus, #noSyllabus {
+  display: inline-block;
+  width: 100%;       /* full width on smaller screens */
+  max-width: 250px;  /* optional limit for larger screens */
+  margin-top: 15px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#downloadSyllabus {
+  color: #fff;
+  background: linear-gradient(135deg, #0077b6, #00a8e8);
+  border: none;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+#downloadSyllabus:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #005f8f, #0077b6);
+}
+
+#noSyllabus {
+  background: #aaa;
+  color: #fff;
+  cursor: not-allowed;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+
+</style>
+</head>
+<body>
+<header>
+    <nav>
+      <a href="welcome.html">Welcome</a>
+      <a href="cv.html">CV</a>
+      <a href="schedule.html">Schedule</a>
+      <a href="cv-entry.html">Make Your Own CV</a>
+      <a href="events.html">Events</a>
+      </nav>
+    </header>
+<h1>Fall 2025-2026 Weekly Schedule</h1>
+
+<table class="schedule-table">
+  <thead>
+    <tr>
+      <th>Time</th>
+      <th>Monday</th>
+      <th>Tuesday</th>
+      <th>Wednesday</th>
+      <th>Thursday</th>
+      <th>Friday</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Network Architecture -->
+    <tr>
+      <td class="time-col">8:00AM</td>
+      <td></td>
+      <td class="course-network" rowspan="3"
+          data-term="Fall 2025-2026"
+          data-crn="11689"
+          data-campus="Kaslik"
+          data-type="Course"
+          data-method="Traditional"
+          data-section="E01"
+          data-subject="Communication Engineering"
+          data-number="431"
+          data-title="Network Arch & Protocols"
+          data-credits="3"
+          data-grade="Numeric"
+          data-instructor="Dr. Zeina Awada"
+          data-meeting="Tuesday & Thursday 8:00AM - 9:15AM"
+          data-description="This course introduces the principles and practices of computer networking, covering how devices connect, communicate, and share data across local and wide area networks. Students will learn about network architectures, protocols, topologies, IP addressing, subnetting, routing, switching, and the OSI and TCP/IP models. Emphasis is placed on understanding how data travels across networks, configuring basic network devices, and troubleshooting common connectivity issues."
+          data-syllabus="syllabi/network-arch.pdf"    
+          >
+        Network Architecture
+      </td>
+      <td></td>
+      <td class="course-network" rowspan="3"
+          data-term="Fall 2025-2026"
+          data-crn="11689"
+          data-campus="Kaslik"
+          data-type="Course"
+          data-method="Traditional"
+          data-section="E01"
+          data-subject="Communication Engineering"
+          data-number="431"
+          data-title="Network Arch & Protocols"
+          data-credits="3"
+          data-grade="Numeric"
+          data-instructor="Dr. Zeina Awada"
+          data-meeting="Tuesday & Thursday 8:00AM - 9:15AM"
+          data-description="This course introduces the principles and practices of computer networking, covering how devices connect, communicate, and share data across local and wide area networks. Students will learn about network architectures, protocols, topologies, IP addressing, subnetting, routing, switching, and the OSI and TCP/IP models. Emphasis is placed on understanding how data travels across networks, configuring basic network devices, and troubleshooting common connectivity issues."
+          data-syllabus="syllabi/network-arch.pdf"
+      >
+        Network Architecture
+      </td>
+      <td></td>
+    </tr>
+    <tr><td class="time-col">8:30AM</td><td></td><td></td><td></td></tr>
+    <tr><td class="time-col">9:00AM</td><td></td><td></td><td></td></tr>
+
+    <!-- Moral Issues -->
+    <tr>
+      <td class="time-col">11:00AM</td>
+      <td></td>
+      <td class="course-moral" rowspan="3"
+          data-term="Fall 2025-2026"
+          data-crn="11701"
+          data-campus="Kaslik"
+          data-type="Course"
+          data-method="Traditional"
+          data-section="B01"
+          data-subject="Philosophy"
+          data-number="210"
+          data-title="Moral Issues of Christianity"
+          data-credits="2"
+          data-grade="Numeric"
+          data-instructor="Dr. Charbel Gergi Ghantous"
+          data-meeting="Tuesday & Thursday 11:00AM - 12:15PM"
+          data-description="This course explores the moral teachings and ethical principles of Christianity and how they apply to contemporary personal, social, and global issues. It examines the biblical foundations of Christian morality, the role of Jesus’ teachings, Church traditions, and reasoned conscience in shaping moral decision-making."
+          data-syllabus="syllabi/network-arch.pdf"   
+          >
+        Moral Issues of Christianity
+      </td>
+      <td></td>
+      <td class="course-moral" rowspan="3"
+          data-term="Fall 2025-2026"
+          data-crn="11701"
+          data-campus="Kaslik"
+          data-type="Course"
+          data-method="Traditional"
+          data-section="B01"
+          data-subject="Philosophy"
+          data-number="210"
+          data-title="Moral Issues of Christianity"
+          data-credits="2"
+          data-grade="Numeric"
+          data-instructor="Dr. Charbel Gergi Ghantous"
+          data-meeting="Tuesday & Thursday 11:00AM - 12:15PM"
+          data-description="This course explores the moral teachings and ethical principles of Christianity and how they apply to contemporary personal, social, and global issues. It examines the biblical foundations of Christian morality, the role of Jesus’ teachings, Church traditions, and reasoned conscience in shaping moral decision-making."
+          data-syllabus="syllabi/network-arch.pdf"
+          >
+        Moral Issues of Christianity
+      </td>
+      <td></td>
+    </tr>
+    <tr><td class="time-col">11:30AM</td><td></td><td></td><td></td></tr>
+    <tr><td class="time-col">12:00PM</td><td></td><td></td><td></td></tr>
+
+    <!-- Non Linear Electronics -->
+    <tr>
+      <td class="time-col">12:30PM</td>
+      <td></td>
+      <td class="course-electronics" rowspan="3"
+          data-term="Fall 2025-2026"
+          data-crn="11823"
+          data-campus="Kaslik"
+          data-type="Course"
+          data-method="Traditional"
+          data-section="C01"
+          data-subject="Electrical Engineering"
+          data-number="332"
+          data-title="Non Linear Electronics"
+          data-credits="3"
+          data-grade="Numeric"
+          data-instructor="Dr. Joseph Elias Assad"
+          data-meeting="Tuesday & Thursday 12:30PM - 1:45PM"
+          data-description="This course focuses on the analysis and design of nonlinear electronic circuits and systems that form the foundation of modern analog and digital electronics. Students will study the behavior and characteristics of nonlinear components such as diodes, transistors, operational amplifiers, and switching devices, and learn how these elements are used in rectifiers, clippers, clampers, amplifiers, oscillators, and waveform generators."
+          data-syllabus="syllabi/network-arch.pdf"     
+          >
+        Non Linear Electronics
+      </td>
+      <td></td>
+      <td class="course-electronics" rowspan="3"
+          data-term="Fall 2025-2026"
+          data-crn="11823"
+          data-campus="Kaslik"
+          data-type="Course"
+          data-method="Traditional"
+          data-section="C01"
+          data-subject="Electrical Engineering"
+          data-number="332"
+          data-title="Non Linear Electronics"
+          data-credits="3"
+          data-grade="Numeric"
+          data-instructor="Dr. Joseph Elias Assad"
+          data-meeting="Tuesday & Thursday 12:30PM - 1:45PM"
+          data-description="This course focuses on the analysis and design of nonlinear electronic circuits and systems that form the foundation of modern analog and digital electronics. Students will study the behavior and characteristics of nonlinear components such as diodes, transistors, operational amplifiers, and switching devices, and learn how these elements are used in rectifiers, clippers, clampers, amplifiers, oscillators, and waveform generators."
+          data-syllabus="syllabi/network-arch.pdf"
+          >
+        Non Linear Electronics
+      </td>
+      <td></td>
+    </tr>
+    <tr><td class="time-col">1:00PM</td><td></td><td></td><td></td></tr>
+    <tr><td class="time-col">1:30PM</td><td></td><td></td><td></td></tr>
+
+    <!-- Web Programming & Algorithms -->
+    <tr>
+      <td class="time-col">3:30PM</td>
+      <td class="course-web" rowspan="3"
+          data-term="Fall 2025-2026"
+          data-crn="11955"
+          data-campus="Kaslik"
+          data-type="Course"
+          data-method="Traditional"
+          data-section="D01"
+          data-subject="Computer Engineering"
+          data-number="440"
+          data-title="Web Programming"
+          data-credits="3"
+          data-grade="Numeric"
+          data-instructor="Ing. Pascal Sleiman Damien"
+          data-meeting="Monday & Friday 3:30PM - 4:45PM"
+          data-description="This course introduces the fundamentals of web development and programming for the internet, covering both front-end and back-end technologies. Students will learn to design, build, and deploy interactive and dynamic web applications using HTML, CSS, JavaScript, and server-side programming languages such as PHP.The course also explores client-server architecture, databases, RESTful APIs, and web security, emphasizing practical skills through hands-on projects. By the end of the course, students will be able to create functional, responsive, and secure web applications for real-world use."
+          data-syllabus="file:///C:/Users/leasa/Downloads/GIN446%20-%20Syllabus%202025-2026%20(Students)%20(2).pdf"
+          >
+        Web Programming
+      </td>
+      <td class="course-algo" rowspan="3"
+          data-term="Fall 2025-2026"
+          data-crn="11977"
+          data-campus="Kaslik"
+          data-type="Course"
+          data-method="Traditional"
+          data-section="E01"
+          data-subject="Computer Engineering"
+          data-number="421"
+          data-title="Algorithms"
+          data-credits="3"
+          data-grade="Numeric"
+          data-instructor="Dr. Joseph Ibrahim Zalaket"
+          data-meeting="Tuesday & Thursday 3:30PM - 4:45PM"
+          data-description="This course introduces the design, analysis, and implementation of algorithms, which are central to solving computational problems in computer engineering. Students will explore algorithmic strategies such as divide and conquer, dynamic programming, greedy algorithms, and graph algorithms, with a focus on efficiency, correctness, and practical application.Topics include complexity analysis, sorting and searching, recursion, data structures, and optimization techniques. Emphasis is placed on developing the ability to choose and implement appropriate algorithms for engineering problems, including embedded systems, software development, and hardware-software interaction."
+          data-syllabus="file:///C:/Users/leasa/Downloads/GIN321%20-%20Students.pdf"
+          >
+        Algorithms
+      </td>
+      <td></td>
+      <td class="course-algo" rowspan="3"
+          data-term="Fall 2025-2026"
+          data-crn="11977"
+          data-campus="Kaslik"
+          data-type="Course"
+          data-method="Traditional"
+          data-section="E01"
+          data-subject="Computer Engineering"
+          data-number="421"
+          data-title="Algorithms"
+          data-credits="3"
+          data-grade="Numeric"
+          data-instructor="Dr. Joseph Ibrahim Zalaket"
+          data-meeting="Tuesday & Thursday 3:30PM - 4:45PM"
+          data-description="This course introduces the design, analysis, and implementation of algorithms, which are central to solving computational problems in computer engineering. Students will explore algorithmic strategies such as divide and conquer, dynamic programming, greedy algorithms, and graph algorithms, with a focus on efficiency, correctness, and practical application.Topics include complexity analysis, sorting and searching, recursion, data structures, and optimization techniques. Emphasis is placed on developing the ability to choose and implement appropriate algorithms for engineering problems, including embedded systems, software development, and hardware-software interaction."
+          data-syllabus="file:///C:/Users/leasa/Downloads/GIN321%20-%20Students.pdf"
+          >
+        Algorithms
+      </td>
+      <td class="course-web" rowspan="3"
+          data-term="Fall 2025-2026"
+          data-crn="11955"
+          data-campus="Kaslik"
+          data-type="Course"
+          data-method="Traditional"
+          data-section="D01"
+          data-subject="Computer Engineering"
+          data-number="440"
+          data-title="Web Programming"
+          data-credits="3"
+          data-grade="Numeric"
+          data-instructor="Ing. Pascal Sleiman Damien"
+          data-meeting="Monday & Friday 3:30PM - 4:45PM"
+          data-description="This course introduces the fundamentals of web development and programming for the internet, covering both front-end and back-end technologies. Students will learn to design, build, and deploy interactive and dynamic web applications using HTML, CSS, JavaScript, and server-side programming languages such as PHP.The course also explores client-server architecture, databases, RESTful APIs, and web security, emphasizing practical skills through hands-on projects. By the end of the course, students will be able to create functional, responsive, and secure web applications for real-world use."
+          data-syllabus="file:///C:/Users/leasa/Downloads/GIN446%20-%20Syllabus%202025-2026%20(Students)%20(2).pdf"
+          >
+        Web Programming
+      </td>
+    </tr>
+    <tr><td class="time-col">4:00PM</td><td></td></tr>
+    <tr><td class="time-col">4:30PM</td><td></td></tr>
+
+    <!-- Non Linear Electronics Lab -->
+    <tr>
+      <td class="time-col">5:30PM</td>
+      <td></td><td></td><td></td><td></td>
+      <td class="course-lab" rowspan="3"
+          data-term="Fall 2025-2026"
+          data-crn="12011"
+          data-campus="Kaslik"
+          data-type="Lab"
+          data-method="Practical"
+          data-section="L01"
+          data-subject="Electrical Engineering"
+          data-number="332L"
+          data-title="Non Linear Electronics Lab"
+          data-credits="1"
+          data-grade="Numeric"
+          data-instructor="Mr. Roy Samia"
+          data-meeting="Friday 5:30PM - 7:10PM"
+          data-description="This laboratory course complements the theoretical study of nonlinear electronics by providing hands-on experience with nonlinear devices and circuits. Students will experiment with diodes, transistors, operational amplifiers, and other nonlinear components to observe their behavior in circuits such as rectifiers, clippers, clampers, amplifiers, and oscillators."
+      >
+        Non Linear Electronics Lab
+      </td>
+    </tr>
+    <tr><td class="time-col">6:00PM</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td class="time-col">6:30PM</td><td></td><td></td><td></td><td></td></tr>
+  </tbody>
+</table>
+
+<!-- Modal -->
+<div id="courseModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Class Details</h2>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+  const modal = document.getElementById('courseModal');
+  const modalContent = document.getElementById('modalContent');
+  const closeBtn = document.querySelector('.close');
+
+  const courses = document.querySelectorAll('td[class^="course-"]');
+  courses.forEach(cell => {
+    cell.addEventListener('click', () => {
+      modalContent.innerHTML = `
+        <p><strong>Associated Term:</strong> ${cell.dataset.term}</p>
+        <p><strong>CRN:</strong> ${cell.dataset.crn}</p>
+        <p><strong>Campus:</strong> ${cell.dataset.campus}</p>
+        <p><strong>Schedule Type:</strong> ${cell.dataset.type}</p>
+        <p><strong>Instructional Method:</strong> ${cell.dataset.method}</p>
+        <p><strong>Section Number:</strong> ${cell.dataset.section}</p>
+        <p><strong>Subject:</strong> ${cell.dataset.subject}</p>
+        <p><strong>Course Number:</strong> ${cell.dataset.number}</p>
+        <p><strong>Title:</strong> ${cell.dataset.title}</p>
+        <p><strong>Credit Hours:</strong> ${cell.dataset.credits}</p>
+        <p><strong>Grade Mode:</strong> ${cell.dataset.grade}</p>
+        <hr>
+        <p><strong>Instructor:</strong> ${cell.dataset.instructor}</p>
+        <p><strong>Meeting Time:</strong> ${cell.dataset.meeting}</p>
+        <hr>
+        <p><strong>Description:</strong> ${cell.dataset.description}</p>
+      <button id="downloadSyllabus">Download Syllabus</button>
+    `;
+
+    const downloadBtn = document.getElementById('downloadSyllabus');
+    downloadBtn.addEventListener('click', () => {
+      const syllabusUrl = cell.dataset.syllabus;
+      if (syllabusUrl) {
+        window.open(syllabusUrl, '_blank'); // opens the syllabus in a new tab
+      } else {
+        alert('Syllabus not available.');
+      }
+    });
+
+    modal.style.display = 'block';
+  });
+});
+
+  closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+  window.addEventListener('click', (e) => { if(e.target == modal) modal.style.display='none'; });
+</script>
+
+</body>
+</html>
